@@ -7,15 +7,16 @@ Business domains (Career, Learning, Knowledge, Portfolio) consume this platform.
 ## What this repository is
 
 - FastAPI platform foundation on Clean Architecture
-- Contract-driven health and shared models via `architect-career-ai-contracts`
+- Contract-driven APIs via `architect-career-ai-contracts`
+- Enterprise Knowledge RAG capability (replaceable adapters per layer)
 - Ports/adapters for LLM, embeddings, retrieval, memory, and tools
 - Observability, security preparation, DI, Docker, and quality tooling
 
 ## What this repository is not
 
 - Not a CRUD app
-- Not domain business endpoints
-- Not RAG/agent/prompt implementations (extension points only)
+- Not Career/Learning/Portfolio domain business logic
+- Not a LangChain/Qdrant/OpenAI-locked demo
 
 ## Quick start
 
@@ -28,9 +29,12 @@ cp .env.example .env
 uvicorn app.main:app --reload --port 8090
 ```
 
-Health:
+Health and Knowledge:
 
 - `GET /api/v1/ai/health` (contract model)
+- `POST /api/v1/ai/knowledge/index`
+- `POST /api/v1/ai/knowledge/search`
+- `POST /api/v1/ai/knowledge/summarize`
 - `GET /api/v1/system/liveness`
 - `GET /api/v1/system/readiness`
 - `GET /api/v1/system/metrics`

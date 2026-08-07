@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.infrastructure.cache.redis_adapter import RedisAdapter
 from app.infrastructure.vector.qdrant_adapter import QdrantAdapter
+from app.orchestration.knowledge.service import KnowledgeService
 from app.shared.di.container import container
 from app.shared.security.authentication import AuthenticationService
 
@@ -18,3 +19,7 @@ def get_qdrant_adapter() -> QdrantAdapter:
 
 def get_authentication_service() -> AuthenticationService:
     return container.authentication_service()
+
+
+def get_knowledge_service() -> KnowledgeService:
+    return container.knowledge_service()

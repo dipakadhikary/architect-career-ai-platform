@@ -38,6 +38,31 @@ class PlatformMetrics:
             ["provider", "model"],
             registry=self.registry,
         )
+        self.knowledge_embedding_latency = Histogram(
+            "acos_ai_knowledge_embedding_latency_seconds",
+            "Knowledge embedding latency",
+            registry=self.registry,
+        )
+        self.knowledge_retrieval_latency = Histogram(
+            "acos_ai_knowledge_retrieval_latency_seconds",
+            "Knowledge retrieval latency",
+            registry=self.registry,
+        )
+        self.knowledge_rerank_latency = Histogram(
+            "acos_ai_knowledge_rerank_latency_seconds",
+            "Knowledge rerank latency",
+            registry=self.registry,
+        )
+        self.knowledge_generation_latency = Histogram(
+            "acos_ai_knowledge_generation_latency_seconds",
+            "Knowledge generation latency",
+            registry=self.registry,
+        )
+        self.knowledge_qdrant_latency = Histogram(
+            "acos_ai_knowledge_vectorstore_latency_seconds",
+            "Knowledge vector store latency",
+            registry=self.registry,
+        )
 
     def render(self) -> tuple[bytes, str]:
         return generate_latest(self.registry), CONTENT_TYPE_LATEST

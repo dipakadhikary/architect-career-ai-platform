@@ -12,6 +12,7 @@ def test_openapi_available(client: TestClient) -> None:
     assert payload["info"]["title"] == "ACOS AI Platform"
     paths = payload["paths"]
     assert "/api/v1/ai/health" in paths
+    assert "/api/v1/ai/knowledge/index" in paths
     assert "/api/v1/system/liveness" in paths
     assert "/api/v1/system/readiness" in paths
     assert "/api/v1/system/metrics" in paths

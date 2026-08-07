@@ -84,6 +84,39 @@ class AppSettings(BaseSettings):
 
     metrics_enabled: bool = True
 
+    # Knowledge / RAG
+    embedding_provider: Literal[
+        "openai", "azure_openai", "ollama", "bge_m3", "sentence_transformers", "hashing"
+    ] = "hashing"
+    embedding_model: str = "text-embedding-3-small"
+    embedding_dimensions: int = 64
+    azure_embedding_deployment: str = ""
+    ollama_embedding_model: str = "nomic-embed-text"
+    bge_m3_model: str = "BAAI/bge-m3"
+    sentence_transformers_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+
+    vector_store_provider: Literal["qdrant", "memory"] = "memory"
+    qdrant_collection: str = "acos_knowledge"
+
+    chunking_strategy: Literal["recursive", "token", "sentence", "markdown", "semantic"] = (
+        "recursive"
+    )
+    chunk_size: int = 800
+    chunk_overlap: int = 120
+
+    retrieval_mode: Literal["dense", "keyword", "hybrid"] = "dense"
+    retrieval_score_threshold: float | None = None
+    summarize_top_k: int = 5
+    summarize_max_length: int = 800
+    summarize_prompt_version: str = "v1"
+    context_max_tokens: int = 3000
+    prompts_root: str = "prompts/knowledge"
+
+    reranker_provider: Literal["none", "identity", "cross_encoder", "bge", "cohere"] = "identity"
+    cross_encoder_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    cohere_api_key: SecretStr | None = None
+    cohere_rerank_model: str = "rerank-english-v3.0"
+
     @field_validator("app_env", mode="before")
     @classmethod
     def normalize_env(cls, value: object) -> object:
