@@ -58,9 +58,39 @@ class PlatformMetrics:
             "Knowledge generation latency",
             registry=self.registry,
         )
-        self.knowledge_qdrant_latency = Histogram(
+        self.    knowledge_qdrant_latency = Histogram(
             "acos_ai_knowledge_vectorstore_latency_seconds",
             "Knowledge vector store latency",
+            registry=self.registry,
+        )
+        self.agentic_workflow_runs = Counter(
+            "acos_ai_agentic_workflow_runs_total",
+            "Agentic workflow executions",
+            ["workflow", "status"],
+            registry=self.registry,
+        )
+        self.agentic_workflow_latency = Histogram(
+            "acos_ai_agentic_workflow_latency_seconds",
+            "Agentic workflow latency",
+            ["workflow"],
+            registry=self.registry,
+        )
+        self.agentic_capability_usage = Counter(
+            "acos_ai_agentic_capability_usage_total",
+            "Agentic capability invocations",
+            ["capability"],
+            registry=self.registry,
+        )
+        self.agentic_tool_usage = Counter(
+            "acos_ai_agentic_tool_usage_total",
+            "Agentic tool executions",
+            ["tool"],
+            registry=self.registry,
+        )
+        self.agentic_graph_runs = Counter(
+            "acos_ai_agentic_graph_runs_total",
+            "LangGraph engine runs",
+            ["graph", "status"],
             registry=self.registry,
         )
 

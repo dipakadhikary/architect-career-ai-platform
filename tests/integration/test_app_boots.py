@@ -13,6 +13,7 @@ def test_openapi_available(client: TestClient) -> None:
     paths = payload["paths"]
     assert "/api/v1/ai/health" in paths
     assert "/api/v1/ai/knowledge/index" in paths
+    assert "/api/v1/ai/chat/completions" in paths
     assert "/api/v1/system/liveness" in paths
     assert "/api/v1/system/readiness" in paths
     assert "/api/v1/system/metrics" in paths

@@ -4,6 +4,21 @@ from __future__ import annotations
 
 from dependency_injector import containers, providers
 
+from app.infrastructure.agentic.factory import (
+    build_agentic_evaluator,
+    build_agentic_memory,
+    build_capability_registry,
+    build_capability_retriever,
+    build_conversation_manager,
+    build_graph_engine,
+    build_model_router,
+    build_planner,
+    build_prompt_registry,
+    build_reasoner,
+    build_response_formatter,
+    build_tool_registry,
+    build_workflow_engine,
+)
 from app.infrastructure.cache.redis_adapter import RedisAdapter
 from app.infrastructure.http.httpx_client import HttpxClientFactory
 from app.infrastructure.knowledge.embeddings.factory import build_embedding_port
@@ -31,6 +46,7 @@ from app.infrastructure.observability.langfuse_adapter import LangfuseAdapter
 from app.infrastructure.observability.otel import configure_otel
 from app.infrastructure.storage.filesystem_adapter import FilesystemAdapter
 from app.infrastructure.vector.qdrant_adapter import QdrantAdapter
+from app.orchestration.agentic.service import AgenticOrchestrationService
 from app.shared.config.settings import get_settings
 from app.shared.observability.metrics import get_metrics
 from app.shared.security.authentication import AuthenticationService
@@ -93,6 +109,68 @@ class ApplicationContainer(containers.DeclarativeContainer):
         response_builder=response_builder,
         llm=llm_port,
         evaluator=rag_evaluator,
+        metrics=metrics,
+        langfuse=langfuse_adapter,
+    )
+
+    # Agentic AI Platform
+    agentic_memory = providers.Singleton(build_agentic_memory, redis_adapter=redis_adapter)
+    model_router = providers.Singleton(build_model_router, settings=config)
+    agentic_planner = providers.Singleton(build_planner)
+    agentic_prompt_registry = providers.Singleton(build_prompt_registry, settings=config)
+    agentic_reasoner = providers.Singleton(
+        build_reasoner, llm=llm_port, router=model_router
+    )
+    conversation_manager = providers.Singleton(
+        build_conversation_manager, memory=agentic_memory
+    )
+    capability_retriever = providers.Singleton(
+        build_capability_retriever,
+        knowledge_retriever=knowledge_retriever,
+        conversation_manager=conversation_manager,
+    )
+    agentic_formatter = providers.Singleton(build_response_formatter)
+    agentic_evaluator = providers.Singleton(
+        build_agentic_evaluator, langfuse=langfuse_adapter
+    )
+    tool_registry = providers.Singleton(
+        build_tool_registry,
+        retriever=capability_retriever,
+        knowledge_service=knowledge_service,
+    )
+    workflow_engine = providers.Singleton(
+        build_workflow_engine,
+        metrics=metrics,
+        planner=agentic_planner,
+        retriever=capability_retriever,
+        prompts=agentic_prompt_registry,
+        reasoner=agentic_reasoner,
+        formatter=agentic_formatter,
+        evaluator=agentic_evaluator,
+        memory=agentic_memory,
+        tools=tool_registry,
+    )
+    graph_engine = providers.Singleton(build_graph_engine)
+    capability_registry = providers.Singleton(
+        build_capability_registry,
+        planner=agentic_planner,
+        retriever=capability_retriever,
+        reasoner=agentic_reasoner,
+        memory=agentic_memory,
+        prompts=agentic_prompt_registry,
+        tools=tool_registry,
+        evaluator=agentic_evaluator,
+        formatter=agentic_formatter,
+        conversation=conversation_manager,
+        workflows=workflow_engine,
+        router=model_router,
+    )
+    agentic_service = providers.Factory(
+        AgenticOrchestrationService,
+        workflows=workflow_engine,
+        graphs=graph_engine,
+        conversations=conversation_manager,
+        registry=capability_registry,
         metrics=metrics,
         langfuse=langfuse_adapter,
     )

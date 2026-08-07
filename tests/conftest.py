@@ -32,6 +32,7 @@ def settings(monkeypatch: pytest.MonkeyPatch) -> AppSettings:
     monkeypatch.setenv("CHUNKING_STRATEGY", "recursive")
     monkeypatch.setenv("CHUNK_SIZE", "200")
     monkeypatch.setenv("CHUNK_OVERLAP", "40")
+    monkeypatch.setenv("AGENTIC_PROMPTS_ROOT", "prompts/agentic")
     get_settings.cache_clear()
     return get_settings()
 

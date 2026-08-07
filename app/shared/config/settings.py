@@ -117,6 +117,10 @@ class AppSettings(BaseSettings):
     cohere_api_key: SecretStr | None = None
     cohere_rerank_model: str = "rerank-english-v3.0"
 
+    # Agentic AI
+    agentic_prompts_root: str = "prompts/agentic"
+    agentic_default_workflow: str = "question_answering"
+
     @field_validator("app_env", mode="before")
     @classmethod
     def normalize_env(cls, value: object) -> object:
